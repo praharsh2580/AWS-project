@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 import boto3
 import os
-from config import region_name,aws_access_key_id,aws_secret_access_key
 
 app = Flask(__name__, static_folder='build', static_url_path='')
 CORS(app)
