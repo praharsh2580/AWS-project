@@ -1,76 +1,15 @@
-# from flask import Flask, render_template, request, jsonify
-# import boto3
-# import os
-# from flask_cors import CORS # type: ignore
-
-# app = Flask(__name__)
-# CORS(app)
-# # Initialize AWS Services
-# s3 = boto3.client('s3')
-# ec2 = boto3.client('ec2')
-
-# # S3 Bucket Name
-# BUCKET_NAME = 'praharsh123456789'  # Replace with your bucket name
-
-# @app.route('/')
-# def index():
-#     return render_template('index.html')
-
-# # S3: Upload File
-# @app.route('/upload', methods=['POST'])
-# def upload_file():
-#     try:
-#         file = request.files['file']
-#         s3.upload_fileobj(file, BUCKET_NAME, file.filename)
-#         return 'File uploaded successfully!'
-#     except Exception as e:
-#         return str(e)
-
-# # S3: List Files
-# @app.route('/list_files', methods=['GET'])
-# def list_files():
-#     try:
-#         objects = s3.list_objects_v2(Bucket=BUCKET_NAME).get('Contents', [])
-#         files = [obj['Key'] for obj in objects]
-#         return jsonify({'files': files})
-#     except Exception as e:
-#         return str(e)
-
-# # EC2: Launch Instance
-# @app.route('/launch_instance', methods=['POST'])
-# def launch_instance():
-#     try:
-#         instance = ec2.run_instances(
-#             ImageId='ami-071226ecf16aa7d96',  # Replace with a valid AMI ID
-#             InstanceType='t2.micro',
-#             MinCount=1,
-#             MaxCount=1
-#         )
-#         instance_id = instance['Instances'][0]['InstanceId']
-#         return jsonify({'instance_id': instance_id})
-#     except Exception as e:
-#         return str(e)
-
-# # EC2: Terminate Instance
-# @app.route('/terminate_instance', methods=['POST'])
-# def terminate_instance():
-#     try:
-#         instance_id = request.json.get('instance_id')
-#         ec2.terminate_instances(InstanceIds=[instance_id])
-#         return f'Instance {instance_id} terminated successfully!'
-#     except Exception as e:
-#         return str(e)
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-
-from flask import Flask, request, jsonify
-import boto3
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
-
-app = Flask(__name__)
-CORS(app)  # Enable Cross-Origin Resource Sharing
+import boto3
+import os
+from config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
+ 
+app = Flask(__name__, static_folder='build', static_url_path='')
+CORS(app)
+ 
+@app.route('/')
+def serve_react():
+    return send_from_directory(app.static_folder, 'index.html')
 
 ec2 = boto3.client('ec2')
 s3 = boto3.client('s3')
