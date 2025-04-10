@@ -1,26 +1,41 @@
-from flask import Flask, request, jsonify, send_file, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import boto3
 import os
 
-
+# Flask App Setup
 app = Flask(__name__, static_folder='dist', static_url_path='')
 CORS(app)
- 
+
+# AWS Configuration
+AWS_ACCESS_KEY_ID = os.getenv("AWS_ACCESS_KEY_ID")
+AWS_SECRET_ACCESS_KEY = os.getenv("AWS_SECRET_ACCESS_KEY")
+AWS_REGION = os.getenv("AWS_REGION")
+
+if not AWS_ACCESS_KEY_ID or not AWS_SECRET_ACCESS_KEY or not AWS_REGION:
+    raise ValueError("AWS credentials or region are not set. Please configure them.")
+
+# Initialize AWS Clients
+ec2 = boto3.client(
+    'ec2',
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=AWS_REGION
+)
+
+s3 = boto3.client(
+    's3',
+    aws_access_key_id=AWS_ACCESS_KEY_ID,
+    aws_secret_access_key=AWS_SECRET_ACCESS_KEY,
+    region_name=AWS_REGION
+)
+
+# Serve React Frontend
 @app.route('/')
 def serve_react():
     return send_from_directory(app.static_folder, 'index.html')
 
-ec2 = boto3.client('ec2')
-s3 = boto3.client('s3')
-
-
-@app.route('/')
-def index():
-    return "AWS Resource Management Backend Running"
-
-
-# Launch EC2 instance
+# API Endpoints
 @app.route('/launch_instance', methods=['POST'])
 def launch_instance():
     try:
@@ -38,8 +53,6 @@ def launch_instance():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# Terminate EC2 instance
 @app.route('/terminate_instance', methods=['POST'])
 def terminate_instance():
     try:
@@ -50,8 +63,6 @@ def terminate_instance():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# Create S3 bucket
 @app.route('/create_bucket', methods=['POST'])
 def create_bucket():
     try:
@@ -62,8 +73,6 @@ def create_bucket():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# List S3 buckets
 @app.route('/list_buckets', methods=['GET'])
 def list_buckets():
     try:
@@ -73,8 +82,6 @@ def list_buckets():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# Upload file to bucket
 @app.route('/upload_to_bucket', methods=['POST'])
 def upload_to_bucket():
     try:
@@ -86,8 +93,6 @@ def upload_to_bucket():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# List files in bucket
 @app.route('/list_files', methods=['POST'])
 def list_files():
     try:
@@ -98,8 +103,6 @@ def list_files():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# Delete file from bucket
 @app.route('/delete_file', methods=['POST'])
 def delete_file():
     try:
@@ -111,14 +114,11 @@ def delete_file():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
-# Delete S3 bucket
 @app.route('/delete_bucket', methods=['POST'])
 def delete_bucket():
     try:
         bucket_name = request.json.get('bucket_name')  # Bucket Name
 
-        # Ensure bucket is empty before deletion
         objects = s3.list_objects_v2(Bucket=bucket_name).get('Contents', [])
         for obj in objects:
             s3.delete_object(Bucket=bucket_name, Key=obj['Key'])
@@ -128,7 +128,6 @@ def delete_bucket():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
-
+# Run Flask App
 if __name__ == '__main__':
-    app.run(host="0.0.0.0",port=5000)
-
+    app.run(host="0.0.0.0", port=5000)
