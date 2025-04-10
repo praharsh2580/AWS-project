@@ -5,7 +5,7 @@ import os
 from config import AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION
 
 
-app = Flask(__name__, static_folder='build', static_url_path='')
+app = Flask(__name__, static_folder='dist', static_url_path='')
 CORS(app)
  
 @app.route('/')
