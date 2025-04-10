@@ -1,7 +1,10 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import boto3
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 # Flask App Setup
 app = Flask(__name__, static_folder='dist', static_url_path='')
