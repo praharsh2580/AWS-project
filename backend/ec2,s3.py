@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 import boto3
 import os
-from config import AWS_REGION, AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY
 
 
 app = Flask(__name__, static_folder='dist', static_url_path='')
@@ -12,12 +11,8 @@ CORS(app)
 def serve_react():
     return send_from_directory(app.static_folder, 'index.html')
 
-ec2 = boto3.client('ec2',region_name=AWS_REGION,
-                   aws_access_key_id=AWS_ACCESS_KEY_ID,
-                   aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
-s3 = boto3.client('s3',region_name=AWS_REGION,
-                   aws_access_key_id=AWS_ACCESS_KEY_ID,
-                   aws_secret_access_key=AWS_SECRET_ACCESS_KEY)
+ec2 = boto3.client('ec2')
+s3 = boto3.client('s3')
 
 
 @app.route('/')
