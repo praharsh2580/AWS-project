@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AWS Automation</title>
+</head>
+<body>
+    <h1>AWS Automation Project</h1>
+    <form action="/upload" method="post" enctype="multipart/form-data">
+        <h3>Upload a File to S3</h3>
+        <input type="file" name="file" />
+        <button type="submit">Upload</button>
+    </form>
+    <hr>
+    <form action="/launch_instance" method="post">
+        <h3>Launch EC2 Instance</h3>
+        <button type="submit">Launch</button>
+    </form>
+</body>
+</html>

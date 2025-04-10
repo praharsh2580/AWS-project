@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC2 and S3 Automation</title>
+</head>
+<body>
+    <h1>EC2 and S3 Automation</h1>
+
+    <!-- Upload File to S3 -->
+    <h2>Upload File to S3</h2>
+    <form action="/upload" method="POST" enctype="multipart/form-data">
+        <label for="file">Select File:</label>
+        <input type="file" id="file" name="file" required>
+        <br><br>
+        <button type="submit">Upload File</button>
+    </form>
+    <br><hr><br>
+
+    <!-- Launch EC2 Instance -->
+    <h2>Launch EC2 Instance</h2>
+    <form action="/launch_instance" method="POST">
+        <label for="ami_id">AMI ID:</label>
+        <input type="text" id="ami_id" name="ami" placeholder="Enter AMI ID" required>
+        <br><br>
+        <label for="instance_type">Instance Type:</label>
+        <input type="text" id="instance_type" name="instance_type" placeholder="e.g., t2.micro" required>
+        <br><br>
+        <button type="submit">Launch Instance</button>
+    </form>
+
+    <br><hr><br>
+
+    <!-- Terminate EC2 Instance -->
+    <h2>Terminate EC2 Instance</h2>
+    <form action="/terminate_instance" method="POST">
+        <label for="instance_id">Instance ID:</label>
+        <input type="text" id="instance_id" name="instance_id" placeholder="Enter Instance ID" required>
+        <br><br>
+        <button type="submit">Terminate Instance</button>
+    </form>
+</body>
+</html>
